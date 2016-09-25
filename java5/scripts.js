@@ -5,6 +5,8 @@ var newName = 'Al';
 
 if (allNames.indexOf(newName) == -1) {
     var tableAfterPush = allNames.push(newName);
+} else {
+  console.log('to imie jest juz podane wczesniej');
 }
 
 console.log(allNames);
