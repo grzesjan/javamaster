@@ -1,0 +1,11 @@
+button {
+    background-color: rgba(91, 191, 221, 1);
+    color: white;
+    border-radius: 5%;
+    font-size: 22px;
+    height: 50px;
+    margin-left: 20px;
+    outline: none;
+    
+}
+
