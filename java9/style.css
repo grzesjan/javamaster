@@ -1,0 +1,22 @@
+.new-game, .player-pick, .title-game, .span-position {
+    margin: 20px 0;
+}
+
+.player-result, .computer-result {
+    font-size: 18px;
+}
+
+.player-pick, .computer-pick {
+    font-size: 18px;
+    font-weight: 500;
+    text-transform: uppercase;
+}
+
+.player-name, .computer-name {
+    font-size: 20px;
+}
+
+.badge {
+    font-size: 15px;
+    background-color: deepskyblue; 
+}
