@@ -1,9 +1,20 @@
-var newGameBtn = document.getElementById('js-newGameButton'),
-    newGameElem = document.getElementById('js-newGameElement'),
-    pickElem = document.getElementById('js-playerPickElement'),
-    resultsElem = document.getElementById('js-resultsTableElement');
+var newGameBtn = document.getElementById('js-newGameButton');
+var newGameElem = document.getElementById('js-newGameElement');
+var pickElem = document.getElementById('js-playerPickElement');
+var resultsElem = document.getElementById('js-resultsTableElement');
 
-newGameBtn.addEventListener('click', newGame);
+var playerPointsElem = document.getElementById('js-playerPoints');
+var playerNameElem = document.getElementById('js-playerName');
+var computerPointsElem = document.getElementById('js-computerPoints');
+
+var pickRock = document.getElementById('js-playerPick_rock');
+var pickPaper = document.getElementById('js-playerPick_paper');
+var pickScissors = document.getElementById('js-playerPick_scissors');
+
+var playerPickElem = document.getElementById('js-playerPick');
+var computerPickElem = document.getElementById('js-computerPick');
+var playerResultElem = document.getElementById('js-playerResult');
+var computerResultElem = document.getElementById('js-computerResult');
 
 var gameState = 'notStarted',
     player = {
@@ -13,6 +24,16 @@ var gameState = 'notStarted',
     computer = {
         score: 0
     };
+
+setGameElements();
+registerListeners();
+
+function registerListeners() {
+    newGameBtn.addEventListener('click', newGame);
+    pickRock.addEventListener('click', function() { playerPick('Rock') });
+    pickPaper.addEventListener('click', function() { playerPick('Paper') });
+    pickScissors.addEventListener('click', function() { playerPick('Scissors') });
+}
 
 function setGameElements() {
     switch(gameState) {
@@ -35,12 +56,6 @@ function setGameElements() {
     }
 }
 
-setGameElements();
-
-var playerPointsElem = document.getElementById('js-playerPoints'),
-    playerNameElem = document.getElementById('js-playerName'),
-    computerPointsElem = document.getElementById('js-computerPoints');
-
 function newGame() {
     player.name = prompt('Please, enter your name');
 
@@ -54,28 +69,16 @@ function newGame() {
     }
 }
 
-function endGame() {
+function checkIfGameEnded() {
     if(player.score == 10) {
-        alert(`Koniec rozgrywki wygral ${player.name} wynikiem: ${player.score} : ${computer.score} `);
+        alert(`Game over! ${player.name} won: ${player.score} : ${computer.score} `);
         gameState = 'ended';
         setGameElements();    
     } else if(computer.score == 10){
-        alert(`Koniec rozgrywki wygral komputer wynikiem: ${computer.score} : ${player.score}`);
+        alert(`Game over! Computer won: ${computer.score} : ${player.score}`);
         gameState = 'ended';
         setGameElements();    
     }
-}
-
-var pickRock = document.getElementById('js-playerPick_rock'),
-    pickPaper = document.getElementById('js-playerPick_paper'),
-    pickScissors = document.getElementById('js-playerPick_scissors');
-
-pickRock.addEventListener('click', function() { playerPick('Rock') });
-pickPaper.addEventListener('click', function() { playerPick('Paper') });
-pickScissors.addEventListener('click', function() { playerPick('Scissors') });
-
-function playerPick(playerPick) {
-    console.log(playerPick);
 }
 
 function getComputerPick() {
@@ -83,51 +86,45 @@ function getComputerPick() {
     return possiblePicks[Math.floor(Math.random()*3)];
 }
 
-var playerPickElem = document.getElementById('js-playerPick'),
-    computerPickElem = document.getElementById('js-computerPick'),
-    playerResultElem = document.getElementById('js-playerResult'),
-    computerResultElem = document.getElementById('js-computerResult');
-
-function playerPick(playerPick) {
-    var computerPick = getComputerPick();
-    
-    playerPickElem.innerHTML = playerPick;
-    computerPickElem.innerHTML = computerPick;
-}
-
 function checkRoundWinner(playerPick, computerPick) {
     playerResultElem.innerHTML = computerResultElem.innerHTML = '';
 
-    var winnerIs = 'player';
 
     if (playerPick == computerPick) {
-        winnerIs = 'noone';
-        playerResultElem.innerHTML = "Draw!";
-        computerResultElem.innerHTML = "Draw!";
-
-        playerResultElem.style.color = "slategray";
-        computerResultElem.style.color = "slategray";
-    } else if (
-        (computerPick == 'Rock' &&  playerPick == 'Scissors') ||
+        return announceTie();    
+    } 
+    
+    if ((computerPick == 'Rock' &&  playerPick == 'Scissors') ||
         (computerPick == 'Scissors' &&  playerPick == 'Paper') ||
         (computerPick == 'Paper' &&  playerPick == 'Rock') ) {
-        
-        winnerIs = 'computer';
+        return setWinner(computer, computerResultElem );
     }
 
-    if (winnerIs == 'player') {
-        playerResultElem.innerHTML = "Win!";
-        player.score++; 
+    return setWinner(player, playerResultElem);
+}
 
-        playerResultElem.style.color = "green";
-    } else if (winnerIs == 'computer') {
-        computerResultElem.innerHTML = "Win!";
-        computer.score++;
+function setGamePoints() {
+    playerPointsElem.innerHTML = player.score;
+    computerPointsElem.innerHTML = computer.score;
+}
 
-        computerResultElem.style.color = "green";
-    }
+function setWinner(winner, winnersElement) {
+    winnersElement.innerHTML = 'Wygrana';
+    winner.score++;
+    winnersElement.style.color = "green";
+    afterFinishingRound();
+}
+
+function afterFinishingRound() {
     setGamePoints();
-    endGame();
+    checkIfGameEnded();
+}
+
+function announceTie() {
+    playerResultElem.innerHTML = "Draw!";
+    computerResultElem.innerHTML = "Draw!";
+    playerResultElem.style.color = "slategray";
+    computerResultElem.style.color = "slategray";
 }
 
 function playerPick(playerPick) {
@@ -139,7 +136,4 @@ function playerPick(playerPick) {
     checkRoundWinner(playerPick, computerPick);
 }
 
-function setGamePoints() {
-    playerPointsElem.innerHTML = player.score;
-    computerPointsElem.innerHTML = computer.score;
-}
+
